@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.2
+
+- **修复（关键）**：导入会话缺 `system/message`，导致**重启后会话打不开**，报
+  `system/message requires a protected first surface head`。
+  宿主要求 `system/message` 是 surface 的第一个节点（protected head）；
+  没有它，宿主续写时想在非空 surface 上补写 `system/message`，会被判非法。
+  现在导入时在第一个 turn 的 `step/start` 之后立刻插入 `system/message`。
+- 注意插入时机：有的会话开头是 reasoning / assistant 记录，第一条 user 消息
+  在很后面。等到第一条 user 消息再插就晚了（surface 已有几十个节点），
+  所以改为**第一个 turn 开始时无条件插入**。
+- 校验器补上这条规则，`test-full-lifecycle` 能抓出来。
+
 ## 0.6.1
 
 - **界面全中文**：设置页文案此前有一份英文版（`COPY.en`），现在统一为中文。
