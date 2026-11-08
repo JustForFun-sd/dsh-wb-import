@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Session format notes
+    url: https://github.com/JustForFun-sd/dsh-wb-import/blob/main/docs/%E4%BC%9A%E8%AF%9D%E6%A0%BC%E5%BC%8F%E4%BF%AE%E5%A4%8D%E8%AE%B0%E5%BD%95.md
+    about: Ten session-format pitfalls this importer had to solve — read this before modifying the code.

@@ -164,6 +164,24 @@ surface（发给模型）：            早期折叠成摘要，最近 N 轮保�
 
 ---
 
+## 开发
+
+```bash
+# 语法检查 + 结构测试（CI 跑的就是这些）
+node --check lib/index.js
+node --check lib/client.js
+node test/test-validator-negative.mjs   # 校验器能抓出已知的 4 类格式 bug
+node test/test-import-shape.mjs         # 自包含：造一份源会话、导入、再校验产物
+```
+
+`test/test-import-shape.mjs` 不需要任何真实会话数据——它自己造一份最小
+WorkBuddy 源会话，喂假的 `sessionPersistence`，然后用宿主级校验器验产物。
+改动事件生成逻辑后先跑它。
+
+CI（`.github/workflows/ci.yml`）在 Ubuntu 和 Windows 上、Node 20/22 下跑：
+语法检查、package.json/cordis 校验、两个测试、npm 包内容检查、README 链接检查、
+以及「已跟踪文件里不许出现本机用户名」。
+
 ## License
 
 MIT

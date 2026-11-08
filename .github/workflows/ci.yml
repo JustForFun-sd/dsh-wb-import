@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Syntax and format checks
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Syntax check (host half)
+        run: node --check lib/index.js
+
+      - name: Syntax check (client half)
+        run: node --check lib/client.js
+
+      - name: Syntax check (tests)
+        run: |
+          node --check test/lifecycle-validator.mjs
+          node --check test/test-validator-negative.mjs
+          node --check test/test-import-shape.mjs
+
+      - name: Validate package.json
+        run: node -e "const p=require('./package.json'); if(!p.name||!p.version||!p.dsh) { console.error('package.json missing name/version/dsh'); process.exit(1); } console.log(p.name+'@'+p.version)"
+
+      - name: Validate cordis patch file
+        run: node -e "const fs=require('fs'); const t=fs.readFileSync('cordis.patch.yml','utf8'); if(!/dsh-wb-import/.test(t)) { console.error('cordis.patch.yml does not mention dsh-wb-import'); process.exit(1); } console.log('patch file ok')"
+
+      - name: Host lifecycle validator (negative cases)
+        run: node test/test-validator-negative.mjs
+
+      - name: Import shape test (self-contained)
+        run: node test/test-import-shape.mjs
+
+      - name: npm pack contents
+        run: npm pack --dry-run
+
+  lint-docs:
+    name: Docs sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: README links resolve
+        run: |
+          # 每个 README 里的相对链接都必须指向仓库里存在的文件
+          node -e "
+          const fs=require('fs'), path=require('path');
+          const md=fs.readFileSync('README.md','utf8');
+          const links=[...md.matchAll(/\]\((?!https?:)([^)#]+)/g)].map(m=>m[1]);
+          let bad=[];
+          for (const l of new Set(links)) {
+            if (!fs.existsSync(path.resolve(l))) bad.push(l);
+          }
+          if (bad.length) { console.error('README references missing files:', bad); process.exit(1); }
+          console.log('README links ok:', [...new Set(links)].join(', ') || '(none)');
+          "
+
+      - name: No local paths leaked
+        run: |
+          # Only tracked files matter here — untracked local notes are not shipped.
+          if git ls-files -z | xargs -0 grep -l "SongDing" 2>/dev/null; then
+            echo "::error::local username leaked into tracked files"
+            exit 1
+          fi
+          echo "no local paths found in tracked files"
