@@ -46,10 +46,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CHANGE-ME/dsh-wb-import.git"
+    "url": "git+https://github.com/JustForFun-sd/dsh-wb-import.git"
   },
   "bugs": {
-    "url": "https://github.com/CHANGE-ME/dsh-wb-import/issues"
+    "url": "https://github.com/JustForFun-sd/dsh-wb-import/issues"
   },
-  "homepage": "https://github.com/CHANGE-ME/dsh-wb-import#readme"
+  "homepage": "https://github.com/JustForFun-sd/dsh-wb-import#readme"
 }
