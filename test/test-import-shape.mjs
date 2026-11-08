@@ -6,7 +6,7 @@
  */
 import { pathToFileURL } from 'node:url';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { validateLifecycle } from './lifecycle-validator.mjs';
 
 const SANDBOX = process.env.DSH_TEST_HOME || join(process.cwd(), '.ci-home');
@@ -87,7 +87,8 @@ console.log('\n== import produces a valid session ==');
 const imp = tools.find((t) => t.name === 'wb_import_session');
 const out = await imp.execute({
   sessionIds: [SRC_ID],
-  workspaceDir: SANDBOX.replace(/[\\/]/g, (m) => m === '/' ? '\\' : m),
+  // 必须是绝对路径。直接用 path.resolve 的结果（Linux 是 /tmp/..., Windows 是 D:\...）
+  workspaceDir: resolve(SANDBOX),
 }, {});
 
 check('import reports success', /^Imported 1 \/ 1/.test(out), out.split('\n')[0]);

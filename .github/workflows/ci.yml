@@ -58,25 +58,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: README links resolve
-        run: |
-          # 每个 README 里的相对链接都必须指向仓库里存在的文件
-          node -e "
-          const fs=require('fs'), path=require('path');
-          const md=fs.readFileSync('README.md','utf8');
-          const links=[...md.matchAll(/\]\((?!https?:)([^)#]+)/g)].map(m=>m[1]);
-          let bad=[];
-          for (const l of new Set(links)) {
-            if (!fs.existsSync(path.resolve(l))) bad.push(l);
-          }
-          if (bad.length) { console.error('README references missing files:', bad); process.exit(1); }
-          console.log('README links ok:', [...new Set(links)].join(', ') || '(none)');
-          "
+        run: node scripts/readme-links.mjs
 
       - name: No local paths leaked
-        run: |
-          # Only tracked files matter here — untracked local notes are not shipped.
-          if git ls-files -z | xargs -0 grep -l "SongDing" 2>/dev/null; then
-            echo "::error::local username leaked into tracked files"
-            exit 1
-          fi
-          echo "no local paths found in tracked files"
+        run: node scripts/leakcheck.mjs

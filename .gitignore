@@ -31,3 +31,6 @@ docs/怎么用.md
 docs/排查记录.md
 docs/重启后验证.md
 docs/待修-bug-assistant-message-id.md
+
+# Test sandbox used by test/test-import-shape.mjs
+.ci-home/
