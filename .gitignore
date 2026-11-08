@@ -22,3 +22,12 @@ Thumbs.db
 
 # Local profile sync helper is machine-specific; keep it out of the package
 sync-to-profile.cjs
+
+# Internal working notes: contain local paths/usernames, kept out of the repo.
+# Only docs/会话格式修复记录.md is published (it is path-neutral).
+docs/修复记录.md
+docs/安装前审查.md
+docs/怎么用.md
+docs/排查记录.md
+docs/重启后验证.md
+docs/待修-bug-assistant-message-id.md
