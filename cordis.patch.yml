@@ -1,0 +1,7 @@
+# dsh-wb-import 打包补丁：把本插件以单条目注入 profile 根。
+# host 半区提供 /dsh-wb-import/* 路由与三个模型工具；
+# client 半区在「设置 → 插件」里加一个 WorkBuddy 导入页。
+# client 半区由 package.json 的 dsh.client 声明驱动，不需要在这里额外声明。
+- insert:
+    - id: wb-import
+      name: dsh-wb-import

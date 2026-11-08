@@ -1,0 +1,54 @@
+{
+  "name": "dsh-wb-import",
+  "version": "0.5.2",
+  "description": "Browse WorkBuddy history sessions and import selected ones into DeepSeek Harness. Adds a settings page plus model tools; imports are recorded in a ledger and can be rolled back.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "workbuddy",
+    "session",
+    "import"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CHANGE-ME/dsh-wb-import.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CHANGE-ME/dsh-wb-import/issues"
+  },
+  "homepage": "https://github.com/CHANGE-ME/dsh-wb-import#readme"
+}

@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Backup files (the plugin's own .bak snapshots)
+*.bak
+*.bak-*
+*.backup
+*.reframe-backup
+*.titlefix-backup
+*.titlemove-backup
+*.reasonfix-backup
+
+# Test / scratch
+.wb-diag/
+*.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local profile sync helper is machine-specific; keep it out of the package
+sync-to-profile.cjs
