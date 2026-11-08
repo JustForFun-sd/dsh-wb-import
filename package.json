@@ -1,6 +1,6 @@
 {
   "name": "dsh-wb-import",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Browse WorkBuddy history sessions and import selected ones into DeepSeek Harness. Adds a settings page plus model tools; imports are recorded in a ledger and can be rolled back.",
   "type": "module",
   "main": "lib/index.js",

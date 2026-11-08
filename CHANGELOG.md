@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0
+
+- **修复**：单轮会话（或最后一轮）没有生成 `turn/end`，留下永远敞开的 turn。
+  宿主校验会判不合法，前端把「打开的轮次」当成还在生成，渲染卡住。
+  现在末尾统一关闭最后一个 turn。
+- **修复**：`resolveWorkspaceDir` 无条件把 `/` 改写成 `\`，在 Linux 上把
+  `/tmp/x` 变成非绝对的 `\tmp\x`。导入和回滚对 workspace key 的理解不一致，
+  导致回滚静默删不掉任何东西。现在只在 Windows 上做归一化。
+- **安全**：原文导出把调用方给的 session id 直接拼进文件路径。构造的 id
+  （如 `../../../evil`）可以把 `full-text.md` 写到会话根目录之外。现在要求
+  解析后的路径仍在根目录内且 basename 符合预期，否则拒绝。
+- **CI**：新增 GitHub Actions —— 语法检查、package/cordis 校验、两个测试、
+  npm 包内容检查、README 链接检查、本机用户名泄露检查（Ubuntu/Windows × Node 20/22）。
+  `test/test-import-shape.mjs` 不需要真实会话数据：自己造源会话、导入、再校验产物。
+- **安全扫描**：新增 CodeQL（security-extended，push/PR/每周定时/手动触发）。
+- **文档**：`docs/会话格式修复记录.md` 随包分发；新增 Issue 模板。
+
 ## 0.5.2
 
 - **UI**：导入按钮移到所有选项下方（全宽）——先定选项，再按动作
