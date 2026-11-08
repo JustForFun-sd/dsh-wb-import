@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.3
+
+- **修复**：会话开头是 assistant 记录时，`system/message` 插不进去（surface 头不是它），
+  重启后会报 `system/message requires a protected first surface head`。
+  现在 `system` 头由 `beginStep` 统一插入 —— 第一个 step 一开就插，
+  不依赖有没有 user 消息。
+- **修复**：`session/title` 插入后重排 seq，但引用 seq 的字段没跟着改
+  （`messageSeqs` / `sourceEventSeqs` / `surfaceOp` /
+  `shadowedRange` / `shadowedSeqs`）。当前会话恰好不受影响，
+  但开头是 assistant 的会话会错位。现在显式修正所有引用。
+- **测试**：`test/test-import-shape.mjs` 增加 surface 头断言和
+  「assistant 开头的会话」边界用例（27 个断言）。
+
 ## 0.6.2
 
 - **修复（关键）**：导入会话缺 `system/message`，导致**重启后会话打不开**，报

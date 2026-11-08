@@ -124,6 +124,35 @@ const surface = events.filter((e) => e.surfaceOp !== undefined);
 check('surface events use append', surface.every((e) => e.surfaceOp === 'append' || typeof e.surfaceOp === 'object'));
 check('seq is dense', events.every((e, i) => e.seq === i));
 
+console.log('\n== surface head ==');
+const surf0 = events.filter((e) => e.surfaceOp !== undefined);
+check('first surface node is system/message', surf0[0]?.type === 'system/message', surf0[0]?.type);
+check('system/message is role system', surf0[0]?.data?.message?.role === 'system');
+check('system/message has system-prompt source', surf0[0]?.data?.message?.source?.kind === 'system-prompt');
+
+console.log('\n== assistant-first edge case ==');
+// 有的会话开头是 assistant 记录，第一条 user 消息在很后面。
+// system 头必须仍然排在 surface 最前面。
+{
+  // 用同一个 workbuddyHome（插件只扫描它），只是另一个会话文件
+  const P2 = PROJ;
+  const id2 = '00000000-0000-4000-8000-000000000002';
+  const recs2 = [
+    { type: 'ai-title', aiTitle: '助手开头的会话' },
+    { type: 'message', role: 'assistant', timestamp: 1, content: [{ type: 'output_text', text: 'opening line' }], providerData: { model: 'hy3' } },
+    { type: 'message', role: 'user', timestamp: 2, content: [{ type: 'input_text', text: '<user_query>hi</user_query>' }], providerData: { model: 'hy3' } },
+  ];
+  writeFileSync(join(P2, `${id2}.jsonl`), recs2.map((r) => JSON.stringify(r)).join('\n') + '\n', 'utf8');
+
+  const saved = captured.length;
+  await imp.execute({ sessionIds: [id2], workspaceDir: resolve(SANDBOX) }, {});
+  const rec2 = captured[saved];
+  const surf2 = rec2.events.filter((e) => e.surfaceOp !== undefined);
+  check('assistant-first: head is system/message', surf2[0]?.type === 'system/message', surf2[0]?.type);
+  const title2 = rec2.events.find((e) => e.type === 'session/title');
+  const cited = rec2.events.find((e) => e.seq === title2?.data?.messageSeqs?.[0]);
+  check('assistant-first: title cites a real user message', cited?.type === 'user/message', cited?.type);
+}
 console.log('\n== tool lifecycle ==');
 const calls = events.filter((e) => e.type === 'tool/call');
 const results = events.filter((e) => e.type === 'tool/result');
